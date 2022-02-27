@@ -14,7 +14,8 @@ from bs4 import BeautifulSoup
 import requests
 
 from soup_dipper import get_soup_from_url
-from stackoverflow_scrapper import *
+from stackoverflow_scrapper import extract_stackoverflow_jobs
+from weworkremotely_scrapper import extract_weworkremotely_jobs
 
 os.system("clear")
 
@@ -40,52 +41,12 @@ def save_jobs(file_name, jobs_info):
       for info in jobs_info:
         csv_writer.writerow(info)
 
-
-def get_weworkremotely_section_urls(soup, base_url):
-  div = soup.find("div", {"class": "jobs-container"})
-
-  if(div == None):
-    print (f"[Failed] div is None")
-
-  sections = div.find_all("section")
-
-  section_urls = []
-  for section in sections:
-    li = section.find("li", {"class": "view-all"})
-
-    if(li == None):
-      continue
-
-    section_urls.append(base_url + li.find("a").get("href"))
-  
-  return section_urls
-
-def extract_weworkremotely_jobs(url, search_keyword):  
-  postfix = "/remote-jobs/search?term=" + search_keyword
-
-  soup = get_soup_from_url(url + postfix)
-
-  section_urls = get_weworkremotely_section_urls(soup, url)
-
-  for section_url in section_urls:
-    soup = get_soup_from_url(section_url)
-
-    jobs_ul = soup.find("section", {"class": "jobs"}).find("ul")
-
-    jobs_li = jobs_ul.find_all("li")
-    
-    for li in jobs_li:
-      li_class = li.get('class')
-
-      if(li_class == ['feature'] or li_class == []):
-        pass
 #========================================================================
 
-# extract_weworkremotely_jobs(urls["weworkremotely"], "python")
+#========================================================================
 
 stackoverflow_jobs = extract_stackoverflow_jobs(urls["stackoverflow"], "python")
+weworkremotely_jobs = extract_weworkremotely_jobs(urls["weworkremotely"], "python")
 
-for job in stackoverflow_jobs:
-  print(f"title: {job['title']}, company: {job['company']}")
-
-# fake_db["python"] = stackoverflow_jobs
+fake_db["python"] = stackoverflow_jobs
+fake_db["python"] += weworkremotely_jobs

@@ -48,11 +48,11 @@ def save_jobs(file_name, jobs_info):
 
 #========================================================================
 
-stackoverflow_jobs = extract_stackoverflow_jobs(urls["stackoverflow"], "python")
-weworkremotely_jobs = extract_weworkremotely_jobs(urls["weworkremotely"], "python")
+# stackoverflow_jobs = extract_stackoverflow_jobs(urls["stackoverflow"], "python")
+# weworkremotely_jobs = extract_weworkremotely_jobs(urls["weworkremotely"], "python")
 
-fake_db["python"] = stackoverflow_jobs
-fake_db["python"] += weworkremotely_jobs
+# fake_db["python"] = stackoverflow_jobs
+# fake_db["python"] += weworkremotely_jobs
 
 # Flask Part ============================================================
 app = Flask("JobScrapper")
@@ -79,7 +79,7 @@ def report():
       jobs = fromDB
     else:
       jobs  = extract_stackoverflow_jobs(urls["stackoverflow"], word)
-      jobs += extract_stackoverflow_jobs(urls["stackoverflow"], word)
+      jobs += extract_weworkremotely_jobs(urls["weworkremotely"], word)
       fake_db[word] = jobs
   except:
     return redirect("/")

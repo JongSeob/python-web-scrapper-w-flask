@@ -24,10 +24,10 @@ def extract_job_infos_from_section(section, base_url):
     if(attr_class == ['feature'] or attr_class == []):
       job_info = {}
       anchor = li.find_all("a")[1]
-      
-      job_info["url"]      = base_url + anchor.get("href")
-      job_info["title"]    = anchor.find("span", {"class": "title"}).text
+
+      job_info["title"]   = anchor.find("span", {"class": "title"}).text      
       job_info["company"] = anchor.find("span", {"class": "company"}).text
+      job_info["url"]     = base_url + anchor.get("href")
 
       job_infos.append(job_info)
 

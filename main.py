@@ -16,8 +16,9 @@ import requests
 from soup_dipper import get_soup_from_url
 from stackoverflow_scrapper import extract_stackoverflow_jobs
 from weworkremotely_scrapper import extract_weworkremotely_jobs
+from exporter import save_to_file
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_file
 
 os.system("clear")
 
@@ -62,28 +63,51 @@ def home():
 
 @app.route("/report") # potato.html <form>의 action 이름과 동일함.
 def report():
-  job = request.args.get('job')
+  word = request.args.get('word')
 
   jobs = []
-  if job:
-    job = job.lower()
 
-    fromDB = fake_db.get(job)
+  try:  
+    word = word.lower()
+    
+    if not word:
+      raise Exception()
+      
+    fromDB = fake_db.get(word)
     
     if (fromDB):
       jobs = fromDB
     else:
-      jobs  = extract_stackoverflow_jobs(urls["stackoverflow"], job)
-      jobs += extract_stackoverflow_jobs(urls["stackoverflow"], job)
-      fake_db[job] = jobs
-  else:
+      jobs  = extract_stackoverflow_jobs(urls["stackoverflow"], word)
+      jobs += extract_stackoverflow_jobs(urls["stackoverflow"], word)
+      fake_db[word] = jobs
+  except:
     return redirect("/")
     
   return render_template("report.html", 
     resultsNumber=len(jobs),
-    searchingBy=job,
+    searchingBy=word,
     jobs=jobs # jobs is the array of dicts
   )
+
+@app.route("/export")
+def export():
+  try:
+    word = request.args.get('word')
+    if not word:
+      raise Exception()
+    word = word.lower()
+
+    jobs = fake_db.get(word)
+    if not jobs:
+      raise Exception()
+
+    save_to_file("jobs.csv", jobs)
+    return send_file("jobs.csv")
+  except:
+    return redirect("/")
+  
+  
 
 app.run(host="0.0.0.0")
 #=========================================================================

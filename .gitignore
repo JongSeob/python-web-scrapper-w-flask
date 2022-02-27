@@ -2,3 +2,5 @@
 *.lock
 *.toml
 *.pyc
+!poetry.lock
+!pyproject.toml

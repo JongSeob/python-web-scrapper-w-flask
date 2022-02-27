@@ -5,17 +5,20 @@
     <title>Job Search</title>
     <style>
       #find-button{
+        margin-top: 15px;
         background-color: teal;
       }
 
       #outer-box {
+        padding: 25px;
+        border-width: thin;
         border: solid;
       }
     </style>
   </head>  
   <body>
-    <h1>Search by term:</h1>
     <div id="outer-box">
+    <h3>Search by term:</h3>
       <form action="/report" method="get">
         <input placeholder="i.e python" name="job" required/>
         <div>

@@ -15,15 +15,22 @@
     <h3 class="center">{{resultsNumber}} {{searchingBy}} jobs found.</h3>
     <a href="https://example.com" class="center">Export to CSV</a>
     <div class="center">
-      <a href="https://example.com"><- Go back</a>  
+      <a href="https://day-thirteen-and-fourteen.jongseob.repl.co"><- Go back</a>  
     </div>
     <!-- template start -->
     <section>
-      <h4 class="center">Software Architect - Cloud Services Integration</h4>
-      <h4 class="center">Ockam</h4>
-      <h4 class="center"><a href="https://example.com" >Apply</a></h4>
+      <ul>
+        {#- jobs is the array of dicts #}
+        {%- for a_job in jobs %}
+        <li>
+          <h4>{{a_job.title}}</h4>
+          <h4>{{a_job.company}}</h4>
+          <h4><a href={{a_job.url}}>Apply</a></h4>
+          <br><hr><br>
+        </li>
+        {%- endfor %}  
+      </ul>
     </section>
-    <br><hr><br>
     <!-- template end -->
   </body>
 </html>

@@ -63,17 +63,26 @@ def home():
 @app.route("/report") # potato.html <form>의 action 이름과 동일함.
 def report():
   job = request.args.get('job')
+
+  jobs = []
   if job:
     job = job.lower()
-    ### ** scrapper code here ** ###
-    # 1. find jobs in fake_db
-    # 2.1 if exist     - use saved data
-    # 2.2 if not exist - run scrapper   
+
+    fromDB = fake_db.get(job)
+    
+    if (fromDB):
+      jobs = fromDB
+    else:
+      jobs  = extract_stackoverflow_jobs(urls["stackoverflow"], job)
+      jobs += extract_stackoverflow_jobs(urls["stackoverflow"], job)
+      fake_db[job] = jobs
   else:
     return redirect("/")
+    
   return render_template("report.html", 
-    resultsNumber=123,
-    searchingBy="python"
+    resultsNumber=len(jobs),
+    searchingBy=job,
+    jobs=jobs # jobs is the array of dicts
   )
 
 app.run(host="0.0.0.0")

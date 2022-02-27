@@ -8,18 +8,24 @@ https://remoteok.io/remote-dev+python-jobs
 Good luck!
 """
 import csv
+import os
 import re
-from soup_dipper import get_soup_from_url
 from bs4 import BeautifulSoup
 import requests
 
-db = {}
+from soup_dipper import get_soup_from_url
+from stackoverflow_scrapper import *
+
+os.system("clear")
+
+fake_db = {}
 
 urls = {
-  "stackoverflow": "https://stackoverflow.com/jobs?r=true&q=python",         
-  "weworkremotely": "https://weworkremotely.com/remote-jobs/search?term=python", 
-  "remoteok": "https://remoteok.io/remote-dev+python-jobs"
+  "stackoverflow": "https://stackoverflow.com",         
+  "weworkremotely": "https://weworkremotely.com", 
+  "remoteok": "https://remoteok.com"
 }
+"/jobs?q=python&r=true&so_source=JobSearch&so_medium=Internal&pg=1"
 
 def save_jobs(file_name, jobs_info):
     if(".csv" not in file_name):
@@ -32,37 +38,54 @@ def save_jobs(file_name, jobs_info):
       csv_writer = csv.writer(csv_file)
 
       for info in jobs_info:
-        csv_writer.writerow(str(info["href"]))
+        csv_writer.writerow(info)
 
 
+def get_weworkremotely_section_urls(soup, base_url):
+  div = soup.find("div", {"class": "jobs-container"})
 
-# stack overflow ------------------------------------------------------
-def get_stackoverflow_pagination(soup):
-  pagination = soup.find("div", {"class": "s-pagination"})
+  if(div == None):
+    print (f"[Failed] div is None")
 
-  anchors = pagination.find_all("a")
+  sections = div.find_all("section")
 
-  anchor_list = []
-  for anchor in anchors:
-    anchor_list.append(anchor)
+  section_urls = []
+  for section in sections:
+    li = section.find("li", {"class": "view-all"})
 
-  # remove the last one that directs the next page
-  anchor_list = anchor_list[:-1]
+    if(li == None):
+      continue
 
-  pagination = []
-  for anchor in anchor_list:
-    pagination.append(anchor["href"])
-
-  return pagination
-
-#------------------------------------------------------
-
-def extract_stackoverflow_python_jobs(url):
-  soup = get_soup_from_url(url)
-
-  pagination = get_stackoverflow_pagination(soup)
-
-  print (pagination)
+    section_urls.append(base_url + li.find("a").get("href"))
   
+  return section_urls
 
-extract_stackoverflow_python_jobs(urls["stackoverflow"])
+def extract_weworkremotely_jobs(url, search_keyword):  
+  postfix = "/remote-jobs/search?term=" + search_keyword
+
+  soup = get_soup_from_url(url + postfix)
+
+  section_urls = get_weworkremotely_section_urls(soup, url)
+
+  for section_url in section_urls:
+    soup = get_soup_from_url(section_url)
+
+    jobs_ul = soup.find("section", {"class": "jobs"}).find("ul")
+
+    jobs_li = jobs_ul.find_all("li")
+    
+    for li in jobs_li:
+      li_class = li.get('class')
+
+      if(li_class == ['feature'] or li_class == []):
+        pass
+#========================================================================
+
+# extract_weworkremotely_jobs(urls["weworkremotely"], "python")
+
+stackoverflow_jobs = extract_stackoverflow_jobs(urls["stackoverflow"], "python")
+
+for job in stackoverflow_jobs:
+  print(f"title: {job['title']}, company: {job['company']}")
+
+# fake_db["python"] = stackoverflow_jobs

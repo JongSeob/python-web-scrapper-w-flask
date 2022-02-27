@@ -17,6 +17,8 @@ from soup_dipper import get_soup_from_url
 from stackoverflow_scrapper import extract_stackoverflow_jobs
 from weworkremotely_scrapper import extract_weworkremotely_jobs
 
+# from flask import Flask, render_template, request
+
 os.system("clear")
 
 fake_db = {}
@@ -50,3 +52,16 @@ weworkremotely_jobs = extract_weworkremotely_jobs(urls["weworkremotely"], "pytho
 
 fake_db["python"] = stackoverflow_jobs
 fake_db["python"] += weworkremotely_jobs
+
+# app = Flask("JobScrapper")
+
+# @app.route("/")
+# def home():
+#   return render_template("home.html")
+
+# @app.route("/report") # potato.html <form>의 action 이름과 동일함.
+# def report():
+#   job = request.args.get('job')
+#   return render_template("home.html", searchingBy=job)
+
+# app.run(host="0.0.0.0")

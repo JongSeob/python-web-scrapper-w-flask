@@ -2,18 +2,26 @@
 
 <html>
   <head>
-    <title>Job Search</title>    
+    <title>Job Search</title>
+    <style>
+      #find-button{
+        background-color: teal;
+      }
+
+      #outer-box {
+        border: solid;
+      }
+    </style>
   </head>  
   <body>
     <h1>Search by term:</h1>
-    <div>
+    <div id="outer-box">
       <form action="/report" method="get">
         <input placeholder="i.e python" name="job" required/>
         <div>
-          <button>Find my job</button>
+          <button id="find-button">Find my job</button>
         </div>
       </form>
     </div>
-    searchingBy = {{searchingBy}}
   </body>
 </html>

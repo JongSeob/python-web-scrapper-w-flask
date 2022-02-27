@@ -17,7 +17,7 @@ from soup_dipper import get_soup_from_url
 from stackoverflow_scrapper import extract_stackoverflow_jobs
 from weworkremotely_scrapper import extract_weworkremotely_jobs
 
-# from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 os.system("clear")
 
@@ -53,15 +53,28 @@ weworkremotely_jobs = extract_weworkremotely_jobs(urls["weworkremotely"], "pytho
 fake_db["python"] = stackoverflow_jobs
 fake_db["python"] += weworkremotely_jobs
 
-# app = Flask("JobScrapper")
+# Flask Part ============================================================
+app = Flask("JobScrapper")
 
-# @app.route("/")
-# def home():
-#   return render_template("home.html")
+@app.route("/")
+def home():
+  return render_template("home.html")
 
-# @app.route("/report") # potato.html <form>의 action 이름과 동일함.
-# def report():
-#   job = request.args.get('job')
-#   return render_template("home.html", searchingBy=job)
+@app.route("/report") # potato.html <form>의 action 이름과 동일함.
+def report():
+  job = request.args.get('job')
+  if job:
+    job = job.lower()
+    ### ** scrapper code here ** ###
+    # 1. find jobs in fake_db
+    # 2.1 if exist     - use saved data
+    # 2.2 if not exist - run scrapper   
+  else:
+    return redirect("/")
+  return render_template("report.html", 
+    resultsNumber=123,
+    searchingBy="python"
+  )
 
-# app.run(host="0.0.0.0")
+app.run(host="0.0.0.0")
+#=========================================================================

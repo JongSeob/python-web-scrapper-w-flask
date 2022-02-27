@@ -11,7 +11,6 @@ import os
 from stackoverflow_scrapper import extract_stackoverflow_jobs
 from weworkremotely_scrapper import extract_weworkremotely_jobs
 from remoteok_scrapper import extract_remoteok_jobs
-
 from exporter import save_to_file
 from flask import Flask, render_template, request, redirect, send_file
 
@@ -25,16 +24,6 @@ urls = {
   "remoteok": "https://remoteok.com"
 }
 
-#========================================================================
-
-# stackoverflow_jobs = extract_stackoverflow_jobs(urls["stackoverflow"], "python")
-# weworkremotely_jobs = extract_weworkremotely_jobs(urls["weworkremotely"], "python")
-# remoteok_jobs = extract_remoteok_jobs(urls["remoteok"], "python")
-
-# fake_db["python"] = stackoverflow_jobs
-# fake_db["python"] += weworkremotely_jobs
-# fake_db["python"] += remoteok_jobs
-
 # Flask Part ============================================================
 app = Flask("JobScrapper")
 
@@ -42,7 +31,7 @@ app = Flask("JobScrapper")
 def home():
   return render_template("home.html")
 
-@app.route("/report") # potato.html <form>의 action 이름과 동일함.
+@app.route("/report") # corresponding to action in potato.html's <form> tag
 def report():
   word = request.args.get('word')
 
